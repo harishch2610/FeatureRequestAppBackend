@@ -1,0 +1,68 @@
+package com.webservice.controllers;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.webservice.beans.FeatureRequestBody;
+import com.webservice.controllers.entityRepository.FeatureRequestRepository;
+import com.webservice.entities.FeatureRequest;
+import com.webservice.service.FeatureRequestService;
+
+
+//@RequestMapping("/user")
+//@RestController
+@Controller
+public class FeatureRequestController {
+	
+	@Autowired
+	private FeatureRequestService featureRequest;
+	
+	@Autowired
+	private FeatureRequestRepository featureRepo;
+	
+	@RequestMapping(method = RequestMethod.POST, value="/create")
+	@ResponseBody
+	public FeatureRequestBody featureRequestSave(@RequestBody FeatureRequest fr) {	
+		FeatureRequestBody fRB = new FeatureRequestBody();
+		try {
+			List<FeatureRequest> frList = featureRepo.findAllRequestsByClient(fr.getClient());				
+			boolean flag = false;
+			Collections.sort((List<FeatureRequest>) frList);
+			if(!frList.isEmpty()) {
+				for(FeatureRequest f : frList){
+					if(f.getClientPriority()!=0 && f.getClientPriority()==(fr.getClientPriority()) && !flag) {
+						flag = true;
+					}
+					if(flag) {
+						f.setClientPriority(f.getClientPriority() + 1);
+					}
+				}
+				for(FeatureRequest f : frList){
+					featureRepo.updateClientPriorityById(f.getId(), f.getClientPriority());
+				}
+			}
+			featureRequest.save(fr);
+			List<FeatureRequest> frr = new ArrayList<FeatureRequest>();
+			frr.add(fr);
+			fRB.setFeatureRequest(frr);	
+			fRB.setSuccess("TRUE");
+		}catch(Exception ex) {
+			ex.printStackTrace();
+			System.out.println("Error occured while saving the Feature Request");
+			FeatureRequest frr = new FeatureRequest();
+			fRB.setSuccess("FALSE");
+			return fRB;
+		}		
+		return fRB;	
+	}
+}
