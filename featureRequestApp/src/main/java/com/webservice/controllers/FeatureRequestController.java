@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.webservice.beans.FeatureRequestBody;
+import com.webservice.beans.FeatureResponseBody;
 import com.webservice.controllers.entityRepository.FeatureRequestRepository;
 import com.webservice.entities.FeatureRequest;
 import com.webservice.service.FeatureRequestService;
@@ -32,8 +33,8 @@ public class FeatureRequestController {
 	
 	@RequestMapping(method = RequestMethod.POST, value="/create")
 	@ResponseBody
-	public FeatureRequestBody featureRequestSave(@RequestBody FeatureRequest fr) {	
-		FeatureRequestBody fRB = new FeatureRequestBody();
+	public FeatureResponseBody featureRequestSave(@RequestBody FeatureRequest fr) {	
+		FeatureResponseBody fRB = new FeatureResponseBody();
 		try {
 			List<FeatureRequest> frList = featureRepo.findAllRequestsByClient(fr.getClient());				
 			boolean flag = false;
@@ -52,14 +53,12 @@ public class FeatureRequestController {
 				}
 			}
 			featureRequest.save(fr);
-			List<FeatureRequest> frr = new ArrayList<FeatureRequest>();
-			frr.add(fr);
-			fRB.setFeatureRequest(frr);	
+			fRB.setFeatureRequest(fr);	
 			fRB.setSuccess("TRUE");
 		}catch(Exception ex) {
 			ex.printStackTrace();
 			System.out.println("Error occured while saving the Feature Request");
-			FeatureRequest frr = new FeatureRequest();
+//			FeatureRequest frr = new FeatureRequest();
 			fRB.setSuccess("FALSE");
 			return fRB;
 		}		

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.webservice.beans.FeatureRequestBody;
+import com.webservice.beans.FeatureResponseBody;
 import com.webservice.controllers.entityRepository.FeatureRequestRepository;
 import com.webservice.entities.FeatureRequest;
 import com.webservice.service.FeatureRequestService;
@@ -37,6 +38,24 @@ public class FeatureRequestSearchController {
 			ex.printStackTrace();
 			System.out.println("Error occured while searching");
 			FeatureRequest frr = new FeatureRequest();
+			fRB.setSuccess("FAIL");	
+		}		
+		return fRB;
+	}
+	
+	
+	@RequestMapping(method = RequestMethod.GET, value="/searchId")
+	@ResponseBody
+	public FeatureResponseBody getFeatureRequestbyId(@RequestBody FeatureRequest fr){
+		FeatureResponseBody fRB = new FeatureResponseBody();
+		FeatureRequest freq = new FeatureRequest();
+		try {
+			freq = featureRepo.findAllRequestsById(fr.getId());
+			fRB.setFeatureRequest(freq);
+			fRB.setSuccess("TRUE");
+		}catch(Exception ex) {
+			ex.printStackTrace();
+			System.out.println("Error occured while searching");
 			fRB.setSuccess("FAIL");	
 		}		
 		return fRB;

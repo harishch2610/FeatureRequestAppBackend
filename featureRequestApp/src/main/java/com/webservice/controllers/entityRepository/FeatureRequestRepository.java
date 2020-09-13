@@ -19,6 +19,9 @@ public interface FeatureRequestRepository extends JpaRepository<FeatureRequest,S
 	@Query("SELECT f from FeatureRequest f where f.client =:client ")
     List<FeatureRequest> findAllRequestsByClient(@Param("client") String client);
 	
+	@Query("SELECT f from FeatureRequest f where f.id =:id ")
+    FeatureRequest findAllRequestsById(@Param("id") Long id);
+	
 	@Modifying
 	@Query("update FeatureRequest f set f.clientPriority = :value where f.id = :id")
 	void updateClientPriorityById(@Param("id") Long id, @Param("value") int value);

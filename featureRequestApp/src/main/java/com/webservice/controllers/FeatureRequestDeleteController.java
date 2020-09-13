@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.webservice.beans.FeatureRequestBody;
+import com.webservice.beans.FeatureResponseBody;
 import com.webservice.controllers.entityRepository.FeatureRequestRepository;
 import com.webservice.entities.FeatureRequest;
 
@@ -19,8 +20,8 @@ public class FeatureRequestDeleteController {
 	
 	@RequestMapping(method = RequestMethod.DELETE, value="/delete")
 	@ResponseBody
-	public FeatureRequestBody deleteFeatureRequest(@RequestBody FeatureRequest fr) {
-		FeatureRequestBody fRB = new FeatureRequestBody();
+	public FeatureResponseBody deleteFeatureRequest(@RequestBody FeatureRequest fr) {
+		FeatureResponseBody fRB = new FeatureResponseBody();
 		try {
 			featureRepo.deleteFeatureRequestById(fr.getId());
 			fRB.setSuccess("TRUE");
